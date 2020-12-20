@@ -7,28 +7,25 @@ from tkinter.filedialog import askopenfile
 import pickle
 # getting all known data
 
-path="static"
-
-images=[]
-classnames=[]
-
-mylist=os.listdir(path)
-
-for cl in mylist:
-    curimg=cv2.imread(f"{path}/{cl}")
-    images.append(curimg)
-    classnames.append(cl.split(".")[0])
 
 
-def findencodings(images):
-    encodelist=[]
-    for img in images:
-        img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-        encode=face_recognition.face_encodings(img)[0]
-        encodelist.append(encode)
-    with open('dataset_faces.dat', 'wb') as f:
-        pickle.dump(encodelist, f)
-    return encodelist
+
+
+with open('cv_images.dat', 'rb') as f:
+    images = pickle.load(f)
+with open('classname.dat', 'rb') as f:
+    classnames = pickle.load(f)
+
+
+# def findencodings(images):
+#     encodelist=[]
+#     for img in images:
+#         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+#         encode=face_recognition.face_encodings(img)[0]
+#         encodelist.append(encode)
+#     with open('dataset_faces.dat', 'wb') as f:
+#         pickle.dump(encodelist, f)
+#     return encodelist
 
 
 #main classifier
@@ -61,9 +58,7 @@ def engine(images,img):
     print("Getting encodings....")
     with open('dataset_faces.dat', 'rb') as f:
         encodeknown = pickle.load(f)
-    if len(images) != len(encodeknown):
-        print("updating encodings......")
-        encodeknown=findencodings(images)
+
 
     classifier(img,encodeknown)
 
