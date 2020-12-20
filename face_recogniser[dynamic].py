@@ -61,6 +61,9 @@ while True:
         print(facedis)
         matchindex=np.argmin(facedis)
 
+        if facedis[matchindex]>0.7:
+            print("no match found")
+            continue
         if matches[matchindex]:
             name=classnames[matchindex]
             print(name)

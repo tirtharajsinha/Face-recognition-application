@@ -39,10 +39,12 @@ def classifier(img,encodeknown):
         facedis = face_recognition.face_distance(encodeknown, encodeface)
 
         matchindex = np.argmin(facedis)
-
+        if facedis[matchindex]<.7:
+            print("no match found")
+            break
         if matches[matchindex]:
             name = classnames[matchindex]
-            print(name, min(facedis) * 100)
+            print("result : ",name, min(facedis) * 100)
             y1, x2, y2, x1 = faceloc
 
             cv2.rectangle(img, (x1, y1), (x2, y2 + 20), (12, 240, 202), 2)
