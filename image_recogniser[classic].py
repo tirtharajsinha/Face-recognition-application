@@ -4,6 +4,7 @@ import face_recognition
 import os
 from datetime import datetime
 from tkinter.filedialog import askopenfile
+import pickle
 # getting all known data
 
 path="static"
@@ -25,6 +26,8 @@ def findencodings(images):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         encode=face_recognition.face_encodings(img)[0]
         encodelist.append(encode)
+    with open('dataset_faces.dat', 'wb') as f:
+        pickle.dump(encodelist, f)
     return encodelist
 
 
@@ -39,7 +42,7 @@ def classifier(img,encodeknown):
         facedis = face_recognition.face_distance(encodeknown, encodeface)
 
         matchindex = np.argmin(facedis)
-        if facedis[matchindex]<.7:
+        if facedis[matchindex]>.7:
             print("no match found")
             break
         if matches[matchindex]:
@@ -55,9 +58,13 @@ def classifier(img,encodeknown):
     cv2.waitKey(0)
 # application engine for entire program
 def engine(images,img):
-    print("encoding....")
-    encodeknown = findencodings(images)
-    print("Encoding done.....")
+    print("Getting encodings....")
+    with open('dataset_faces.dat', 'rb') as f:
+        encodeknown = pickle.load(f)
+    if len(images) != len(encodeknown):
+        print("updating encodings......")
+        encodeknown=findencodings(images)
+
     classifier(img,encodeknown)
 
 # getting query data

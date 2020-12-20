@@ -3,6 +3,7 @@ import numpy as np
 import face_recognition
 import os
 from datetime import datetime
+import pickle
 # getting all known data
 
 path="static"
@@ -11,12 +12,12 @@ images=[]
 classnames=[]
 
 mylist=os.listdir(path)
-print(mylist)
+
 for cl in mylist:
     curimg=cv2.imread(f"{path}/{cl}")
     images.append(curimg)
     classnames.append(cl.split(".")[0])
-print(classnames)
+
 
 def findencodings(images):
     encodelist=[]
@@ -24,10 +25,20 @@ def findencodings(images):
         img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
         encode=face_recognition.face_encodings(img)[0]
         encodelist.append(encode)
+    with open('dataset_faces.dat', 'wb') as f:
+        pickle.dump(encodelist, f)
     return encodelist
 
-encodeknown=findencodings(images)
-print("Encoding done.....")
+print("Getting encodings....")
+with open('dataset_faces.dat', 'rb') as f:
+    encodeknown = pickle.load(f)
+if len(images) != len(encodeknown):
+    print("updating encodings......")
+    encodeknown=findencodings(images)
+    print("encodings update done.....")
+
+
+
 #marking
 def markings(name):
     with open("found_faces.csv","r+") as f:
@@ -58,7 +69,7 @@ while True:
     for encodeface,faceloc in zip(encodescurframe,facescurframe):
         matches=face_recognition.compare_faces(encodeknown,encodeface)
         facedis=face_recognition.face_distance(encodeknown,encodeface)
-        print(facedis)
+
         matchindex=np.argmin(facedis)
 
         if facedis[matchindex]>0.7:
