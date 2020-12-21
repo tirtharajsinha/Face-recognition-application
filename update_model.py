@@ -49,3 +49,4 @@ with open('dataset_faces.dat', 'wb') as f:
     pickle.dump(oldknown, f)
 print("Successfully data updated.......")
 print(len(oldclassname), len(oldknown))
+print(newclassname)
