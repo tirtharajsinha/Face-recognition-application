@@ -6,8 +6,8 @@ from datetime import datetime
 import pickle
 # getting all known data
 
-with open('cv_images.dat', 'rb') as f:
-    images = pickle.load(f)
+# with open('cv_images.dat', 'rb') as f:
+#     images = pickle.load(f)
 with open('classname.dat', 'rb') as f:
     classnames = pickle.load(f)
 

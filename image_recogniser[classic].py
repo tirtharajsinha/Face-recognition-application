@@ -11,12 +11,12 @@ import pickle
 
 
 
-with open('cv_images.dat', 'rb') as f:
-    images = pickle.load(f)
+# with open('cv_images.dat', 'rb') as f:
+#     images = pickle.load(f)
 with open('classname.dat', 'rb') as f:
     classnames = pickle.load(f)
 
-
+print(classnames)
 # def findencodings(images):
 #     encodelist=[]
 #     for img in images:
@@ -54,7 +54,7 @@ def classifier(img,encodeknown):
     cv2.imshow("face recogniser", img)
     cv2.waitKey(0)
 # application engine for entire program
-def engine(images,img):
+def engine(img):
     print("Getting encodings....")
     with open('dataset_faces.dat', 'rb') as f:
         encodeknown = pickle.load(f)
@@ -75,7 +75,7 @@ except:
 
 # checking permission
 if permission==True:
-    engine(images,img)
+    engine(img)
 else:
     print("no image uploaded")
 
