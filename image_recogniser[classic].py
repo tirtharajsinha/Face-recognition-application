@@ -31,6 +31,8 @@ print(classnames)
 #main classifier
 
 def classifier(img,encodeknown):
+    img = cv2.resize(img, (544, 640),
+                     interpolation=cv2.INTER_NEAREST)
     imgs = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
     facescurframe = face_recognition.face_locations(imgs)
     encodescurframe = face_recognition.face_encodings(imgs, facescurframe)
