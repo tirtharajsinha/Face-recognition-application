@@ -1,4 +1,7 @@
+############## LIBRARY IMPORT #####################
+
 from tkinter import *
+from tkinter import messagebox
 from PIL import Image,ImageTk
 import cv2
 import numpy as np
@@ -6,13 +9,13 @@ import face_recognition
 import os
 from datetime import datetime
 import pickle
-# getting all known data
 
+
+
+############## Fetching encodings and classnames ###########
 
 with open('classname.dat', 'rb') as f:
     classnames = pickle.load(f)
-
-
 
 print("Getting encodings....")
 with open('dataset_faces.dat', 'rb') as f:
@@ -21,7 +24,7 @@ with open('dataset_faces.dat', 'rb') as f:
 
 
 
-#marking
+############### marking ##################
 def markings(name):
     with open("found_faces.csv","r+") as f:
         mydatalist=f.readlines()
@@ -40,7 +43,7 @@ def markings(name):
             f.writelines(mandata)
             print("data recorded : ",mandata)
 
-# getting query data
+############# SUPPORTING FUNCTIONS ############
 cnd=True
 def cmnd():
     m.destroy()
@@ -48,6 +51,29 @@ def ext():
     global cnd
     cnd=False
     m.destroy()
+def cononext():
+    global cnd
+
+    MsgBox = messagebox.askquestion('Exit Application', 'Are you sure you want to exit the application',
+                                       icon='warning')
+    if MsgBox == 'yes':
+
+
+        cnd=False
+
+
+def changeOnHover(button, colorOnHover, colorOnLeave):
+    # adjusting backgroung of the widget
+    # background on entering widget
+    button.bind("<Enter>", func=lambda e: button.config(
+        background=colorOnHover))
+
+    # background color on leving widget
+    button.bind("<Leave>", func=lambda e: button.config(
+        background=colorOnLeave))
+
+########### Application starter confermation window ##########
+
 m=Tk()
 m.title("LookAtMe - Face Recogniser")
 m.geometry("250x100")
@@ -63,12 +89,22 @@ Button(m,fg="red", text="no", command=ext,width=10).place(x=150,y=50)
 
 m.mainloop()
 
+
+######################### MAIN GUI WINDOW ##########################
+
 root = Tk()
+icn = PhotoImage(file = "faceicon.jpg")
+root.iconphoto(False, icn)
 root.title("LookAtMe - Face recogniser ")
 root.geometry("1000x800")
 root.minsize(width=1000, height=800)
 root.maxsize(width=1000, height=800)
 root.configure(bg="goldenrod2")
+
+
+extbtn=Button(root,text="close",bg="white",fg="red", command=cononext, font="Consolas 20 bold")
+extbtn.place(x=850,y=160,height=50,width=100)
+changeOnHover(extbtn,"green","white")
 ft = Frame(root, bg="green", height=200)
 ft.pack(fill="x", padx=10, pady=10)
 Label(ft, bg="green", font="Algerian 20 bold underline", text="LookAtMe : THE FACE RECOGNISER", fg="red").pack()
@@ -94,11 +130,14 @@ canvas.config(yscrollcommand=vbar.set)
 canvas.pack(anchor="ne")
 canvas.create_text(150, 20, text="Today's Attendees", font="Jokerman 15 bold underline", fill="blue")
 
+############################# MAIN application logic ##############################
+
 cap = cv2.VideoCapture(0)
 while True:
     if cnd==False:
         root.destroy()
         break
+
 
     sucess, img = cap.read()
     imgs = cv2.resize(img, (0, 0), None, 0.25, 0.25)
@@ -115,6 +154,7 @@ while True:
             print("no match found")
             continue
         if matches[matchindex]:
+            name=""
             name = classnames[matchindex]
 
             y1, x2, y2, x1 = faceloc
@@ -124,14 +164,20 @@ while True:
             cv2.putText(img, name, (x1 + 6, y2 - 6), cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, (0, 0, 0), 2)
             mandata = markings(name)
 
-            l2["text"] = "------Recognised face------\n" + name
+            try:
+                l2["text"] = "------Recognised face------\n" + name
+            except:
+                break
 
-    img1 = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
-    img = ImageTk.PhotoImage(Image.fromarray(img1))
-    l1["image"] = img
+    try:
+        img1 = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+        img = ImageTk.PhotoImage(Image.fromarray(img1))
+        l1["image"] = img
+    except:
+        break
     with open("found_faces.csv", "r+") as f:
         mydatalist = f.readlines()
-
+        ################# DATA RENDERING at GUI #################
         now = datetime.now()
         timenow = str(now).split()
         date = timenow[0]
