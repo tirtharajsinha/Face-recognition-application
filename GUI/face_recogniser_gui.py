@@ -77,9 +77,18 @@ def train_model():
                                  'Do you want to update the model? ',
                                  icon='question')
     if update == 'yes':
+        global classnames
+        global encodeknown
         exec(open("model_trainer.py").read())
         exec(open("update_model.py").read())
-        messagebox.showinfo("application update detected", "Please Restart the application to see the result.")
+        with open('classname.dat', 'rb') as f:
+            classnames = pickle.load(f)
+
+        print("Getting encodings....")
+        with open('dataset_faces.dat', 'rb') as f:
+            encodeknown = pickle.load(f)
+        messagebox.showinfo("application update detected", "newly trained face_Recognition application is ready to use"
+                                                           "Enjoy!!!")
     else:
         messagebox.showinfo("update Cancelled", "cancelled model training")
 
