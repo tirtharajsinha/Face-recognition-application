@@ -6,7 +6,7 @@ from PIL import Image,ImageTk
 import cv2
 import numpy as np
 import face_recognition
-import os
+#import os
 from datetime import datetime
 import pickle
 
@@ -125,6 +125,9 @@ upbtn.place(x=680,y=160,height=50,width=180)
 
 extbtn=Button(root,text="close",bg="white",fg="red", command=cononext, font="Consolas 20 bold")
 extbtn.place(x=890,y=160,height=50,width=80)
+
+time = Label(root,bg="blue",fg="white", font="Consolas 20 bold")
+time.place(x=720,y=220,height=50,width=200)
 changeOnHover(extbtn,"green","white")
 ft = Frame(root, bg="green", height=200)
 ft.pack(fill="x", padx=10, pady=10)
@@ -175,7 +178,7 @@ while True:
             print("no match found")
             continue
         if matches[matchindex]:
-            name=""
+
             name = classnames[matchindex]
 
             y1, x2, y2, x1 = faceloc
@@ -196,6 +199,10 @@ while True:
         l1["image"] = img
     except:
         break
+    now = datetime.now()
+    timenow = str(now).split()
+    t = timenow[1].split(".")[0]
+    time["text"]=t
     with open("found_faces.csv", "r+") as f:
         mydatalist = f.readlines()
         ################# DATA RENDERING at GUI #################
