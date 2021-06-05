@@ -1,3 +1,4 @@
+<img src="faceicon.jpg" height="200px" width="200px">
 # Face-recognition-application<hr>
 using opencv ,cmake,dlib,face-recognition,tkinter.
 version available dynamic(webcam version) & classical(user input)<br>
